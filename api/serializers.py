@@ -3,18 +3,19 @@ from .models import Category,Product
 from django.contrib.auth.models import User
 
 #products
-class ProductSerializer(serializers.ModelSerializer):
+class ProductSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Product
         fields = '__all__'
 
 #category of products
-class CategorySerializer(serializers.ModelSerializer):
-
+class CategorySerializer(serializers.HyperlinkedModelSerializer):
+    #product = serializers.StringRelatedField(many=True)
+    product = ProductSerializer(many=True, read_only=True)
     class Meta:
         model = Category
-        fields = '__all__'
+        fields = ['url','name','product']
 
 #for signup and all related authentication things
 class UserSerializer(serializers.ModelSerializer):
