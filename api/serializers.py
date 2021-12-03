@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Category,Product
+from .models import Category,Product,Cart
 from django.contrib.auth.models import User
 
 #products
@@ -16,6 +16,11 @@ class CategorySerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Category
         fields = ['url','name','product']
+
+class CartSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Cart
+        fields = '__all__'
 
 #for signup and all related authentication things
 class UserSerializer(serializers.ModelSerializer):

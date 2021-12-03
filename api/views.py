@@ -1,13 +1,14 @@
 from .serializers import (CategorySerializer,
                           ProductSerializer,
-                          UserSerializer)
+                          UserSerializer,
+                          CartSerializer)
 
 from rest_framework import (viewsets,
                             permissions,
                             generics,
                             status)
 
-from .models import Category,Product
+from .models import Category,Product,Cart
 from .permissions import IsAdminUserOrReadOnly
 
 from rest_framework.views import APIView
@@ -62,8 +63,21 @@ class CategoryView(viewsets.ModelViewSet):
     serializer_class = CategorySerializer
     queryset = Category.objects.all()
 
-
+#products
 class ProductView(viewsets.ModelViewSet):
     permission_classes = [IsAdminUserOrReadOnly]
     serializer_class = ProductSerializer
     queryset = Product.objects.all()
+
+class CartView(viewsets.ModelViewSet):
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = CartSerializer
+    queryset = Cart.objects.all()
+    
+    def post(self,request):
+        query = self.get_queryset()
+        serializer = self.get_serializer(query,data=request.data)
+        if serializer.is_valid():
+            serializer.save(owner=request.user.username)
+            return Response(serializer.data)
+        return Reponse(serializer.errors)
